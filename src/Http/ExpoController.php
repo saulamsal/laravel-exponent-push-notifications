@@ -30,7 +30,7 @@ class ExpoController extends Controller
      * Handles subscription endpoint for an expo token.
      *
      * @param  Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function subscribe(Request $request)
     {
@@ -39,7 +39,7 @@ class ExpoController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return JsonResponse::create([
+            return response()->json([
                 'status' => 'failed',
                 'error' => [
                     'message' => 'Expo Token is required',
@@ -54,7 +54,7 @@ class ExpoController extends Controller
         try {
             $this->expoChannel->expo->subscribe($interest, $token);
         } catch (\Exception $e) {
-            return JsonResponse::create([
+            return response()->json([
                 'status'    => 'failed',
                 'error'     =>  [
                     'message' => $e->getMessage(),
@@ -62,7 +62,7 @@ class ExpoController extends Controller
             ], 500);
         }
 
-        return JsonResponse::create([
+        return response()->json([
             'status'    =>  'succeeded',
             'expo_token' => $token,
         ], 200);
@@ -83,7 +83,7 @@ class ExpoController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return JsonResponse::create([
+            return response()->json([
                 'status' => 'failed',
                 'error' => [
                     'message' => 'Expo Token is invalid',
@@ -96,7 +96,7 @@ class ExpoController extends Controller
         try {
             $deleted = $this->expoChannel->expo->unsubscribe($interest, $token);
         } catch (\Exception $e) {
-            return JsonResponse::create([
+            return response()->json([
                 'status'    => 'failed',
                 'error'     =>  [
                     'message' => $e->getMessage(),
@@ -104,6 +104,6 @@ class ExpoController extends Controller
             ], 500);
         }
 
-        return JsonResponse::create(['deleted' => $deleted]);
+        return response()->json(['deleted' => $deleted]);
     }
 }

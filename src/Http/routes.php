@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 Route::group(['prefix' => 'api/exponent/devices', 'middleware' => 'expo.middleware'], function () {
     Route::post('subscribe', [
         'as'    =>  'register-interest',

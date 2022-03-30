@@ -7,6 +7,7 @@ use ExponentPhpSDK\Expo;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Arr;
 use NotificationChannels\ExpoPushNotifications\Exceptions\CouldNotSendNotification;
 
 class ExpoChannel
@@ -37,17 +38,17 @@ class ExpoChannel
      * Send the given notification.
      *
      * @param  mixed  $notifiable
-     * @param  \Illuminate\Notifications\Notification  $notification
+     * @param Notification $notification
      * @return void
      *
-     * @throws CouldNotSendNotification
+     * @throws CouldNotSendNotification|\ExponentPhpSDK\Exceptions\UnexpectedResponseException
      */
     public function send($notifiable, Notification $notification)
     {
         $interest = $notifiable->routeNotificationFor('ExpoPushNotifications')
             ?: $this->interestName($notifiable);
 
-        $interests = [$interest];
+        $interests = Arr::wrap($interest);
 
         try {
             $this->expo->notify(

@@ -73,6 +73,25 @@ class ChannelTest extends TestCase
         $this->channel->send($this->notifiable, $this->notification);
     }
 
+
+    /** @test */
+    public function itCanSendANNotificationToMultipleInterests()
+    {
+        $this->notifiable = Mockery::mock($this->notifiable);
+
+        $this->notifiable->shouldReceive('routeNotificationFor')
+            ->with('ExpoPushNotifications')
+            ->andReturn($interests = ['interest_1', 'interest_2']);
+
+        $message = $this->notification->toExpoPush($this->notifiable);
+
+        $data = $message->toArray();
+
+        $this->expo->shouldReceive('notify')->with($interests, $data, true)->andReturn([['status' => 'ok']]);
+
+        $this->channel->send($this->notifiable, $this->notification);
+    }
+
     /** @test */
     public function itFiresFailureEventOnFailure()
     {
